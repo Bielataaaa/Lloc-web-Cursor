@@ -3,31 +3,81 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Front-end</title>
+    <title>Ciberseguridad y sus curiosidades</title>
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
-        margin: 2rem;
+        margin: 0;
+        background: #0b1020;
+        color: #e6edf3;
       }
-      button {
-        padding: 0.6rem 1rem;
-        cursor: pointer;
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
       }
-      pre {
-        background: #f5f5f5;
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      .banner {
+        background: #121a30;
+        border: 1px solid #24314f;
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        margin-bottom: 1rem;
+      }
+      .banner ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        margin: 0;
+        padding: 0;
+      }
+      .banner a {
+        color: #e6edf3;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .banner a:hover {
+        color: #7dd3fc;
+      }
+      .subtitulo {
+        color: #9fb2c8;
+        margin-top: 0;
+      }
+      section {
+        background: #121a30;
+        border: 1px solid #24314f;
+        border-radius: 12px;
         padding: 1rem;
-        border-radius: 8px;
-        overflow: auto;
+        margin-top: 1rem;
+      }
+      ul {
+        line-height: 1.7;
       }
     </style>
   </head>
   <body>
-    <h1>Front-end</h1>
-    <button id="btnHello">Pedir hello al back-end</button>
-    <p id="status"></p>
-    <pre id="output"></pre>
-
-    <script src="./app.js"></script>
+    <main>
+      <nav class="banner" aria-label="Navegacion principal">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </nav>
+      <h1>Ciberseguridad y sus curiosidades</h1>
+      <section>
+        <h2>Curiosidades</h2>
+        <ul>
+          <li>Un password de 12 caracteres es mucho mas seguro que uno corto.</li>
+          <li>El phishing sigue siendo uno de los ataques mas comunes.</li>
+          <li>La autenticacion de dos factores reduce mucho el riesgo de robo de cuentas.</li>
+          <li>Actualizar el sistema y las apps tapa vulnerabilidades conocidas.</li>
+          <li>Las redes Wi-Fi publicas pueden ser peligrosas si no usas proteccion.</li>
+        </ul>
+      </section>
+    </main>
   </body>
 </html>
-
