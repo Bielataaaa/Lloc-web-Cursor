@@ -18,7 +18,7 @@ L'objectiu principal del projecte és crear una **plataforma web accessible i in
 
 
 ## Tecnologies Utilitzades
-- **Frontend**: HTML5, CSS3, JavaScript
+- **Frontend**: HTML, CSS, JavaScript
 
 ## Estat del Projecte
 **Estado**: En desenvolupament
