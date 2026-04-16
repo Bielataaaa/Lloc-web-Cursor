@@ -19,7 +19,7 @@ L'objectiu principal del projecte és crear una **plataforma web accessible i in
 
 ## Tecnologies Utilitzades
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Backend**: Python (Flask/Django)
+- **Backend**: Python 
 
 ## Estat del Projecte
 **Estado**: En desenvolupament
