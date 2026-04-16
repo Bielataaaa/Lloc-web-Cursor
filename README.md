@@ -15,14 +15,12 @@ L'objectiu principal del projecte és crear una **plataforma web accessible i in
 - Accedir a informació estructurada sense necessitat de navegació complexa
 - Mantenir-se informats mitjançant una subscripció a novetats
 
-## ⚙️ Funcionalitats
+## Funcionalitats
 
 
 ## Tecnologies Utilitzades
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Backend**: Python (Flask/Django)
-- **Base de dades**: (Per especificar segons la implementació)
-- **Versioning**: Git & GitHub
 
 ## Estat del Projecte
 **Estado**: En desenvolupament
