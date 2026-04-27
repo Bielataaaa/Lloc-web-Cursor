@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <span class="logo">Cyber<span>Guard</span></span>
+    <nav class="nav">
+      <button class="nb on" onclick="go('inicio', this)">Inici</button>
+      <button class="nb" onclick="go('ataques', this)">Atacs</button>
+      <button class="nb" onclick="go('quiz', this)">Quiz</button>
+      <button class="nb" onclick="go('pass', this)">Contrasenya</button>
+    </nav>
+  </div>
+
+  <!-- INICIO -->
+  <div id="inicio" class="pg on">
+    <h2>Protegeix la teva vida digital</h2>
+    <p>Aprèn sobre ciberatacs, posa a prova els teus coneixements i analitza les teves contrasenyes.</p>
+    <div class="stats">
+      <div class="card stat">
+        <div class="stat-num">10B+</div>
+        <div class="stat-lbl">Dades filtrades</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num">2.200</div>
+        <div class="stat-lbl">Atacs al dia</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num">95%</div>
+        <div class="stat-lbl">Error humà</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATAQUES -->
+  <div id="ataques" class="pg">
+    <h2>Tipus d'atac</h2>
+    <p>Fes clic en un per saber-ne més.</p>
+    <div id="atk-list" class="atk-list"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="pg">
+    <h2>Qüestionari ràpid</h2>
+    <div id="qbox"></div>
+  </div>
+
+  <!-- CONTRASEÑA -->
+  <div id="pass" class="pg">
+    <h2>Analitza la teva contrasenya</h2>
+    <input type="password" id="pw-input" placeholder="Escriu aquí..." autocomplete="off" oninput="testPw(this.value)"/>
+    <div class="pw-bar"><div id="pbar"></div></div>
+    <p id="plbl" class="pw-label">—</p>
+    <div id="pcrit" class="criteria"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
