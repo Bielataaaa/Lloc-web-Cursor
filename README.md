@@ -31,6 +31,7 @@ L'objectiu principal del projecte és crear una **plataforma web accessible i in
 1. Obre una terminal a la carpeta del projecte i executa: `node server.js`
 2. O fes doble clic a **`iniciar-web.bat`**
 3. Entra al navegador amb: **http://localhost:8080**
+
 Pots desar aquest enllaç als marcadors del navegador per obrir-lo quan vulguis (sempre que abans hagis executat `iniciar-web.bat` o `node server.js`).
 
 ## Estat del Projecte
