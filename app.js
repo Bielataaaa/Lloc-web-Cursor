@@ -1,27 +1,44 @@
+/* =============================================================================
+   CYBERGUARD — app.js
+   Toda la logica interactiva de la web. No hay backend: todo corre en el
+   navegador del usuario.
+   ============================================================================= */
+
 /* ==================== NAVEGACION ==================== */
+
+// Textos reutilizados en la interfaz
 const TEXTO_EXPANDIR = 'Haz clic para ver mas';
 const TEXTO_CONTRAER = 'Contraer';
 const TEXTO_BOTON_COMPROBAR = '// comprobar_filtracion';
 const TEXTO_BOTON_COMPROBANDO = '// comprobando...';
+
+// Claves de los criterios del analizador de contraseñas (coinciden con ids en HTML)
 const CLAVES_CRITERIOS = ['len', 'upper', 'lower', 'num', 'sym', 'rep'];
 
+// Atajo para obtener un elemento del DOM por su id
 const getEl = (id) => document.getElementById(id);
+
+// Muestra el resultado de la comprobacion de filtraciones
 const setPwnedResult = (el, html) => {
   el.className = 'pwned-result show';
   el.innerHTML = html;
 };
 
+// Marca como activo el enlace del menu que coincide con la seccion
 function setNavActiveByHref(href) {
   document.querySelectorAll('.nav-link').forEach((link) => {
     link.classList.toggle('active', link.getAttribute('href') === href);
   });
 }
 
+// Llamada desde onclick en los enlaces del menu
 function setActive(el) {
   setNavActiveByHref(el.getAttribute('href'));
 }
 
 /* ==================== ATAQUES ==================== */
+
+// Base de datos de ataques: cada objeto tiene titulo, descripcion, pasos y defensa
 const attacks = [
   {
     id: 'phishing', icon: 'PH', risk: 'critical', riskLabel: 'Critico',
@@ -73,12 +90,15 @@ const attacks = [
   }
 ];
 
+// Guarda el id del ataque actualmente expandido (null si ninguno)
 let openAttack = null;
 
+// Devuelve la clase CSS segun el nivel de riesgo
 function getRiskClass(risk) {
   return risk === 'critical' ? 'risk-critical' : risk === 'high' ? 'risk-high' : 'risk-medium';
 }
 
+// Abre o cierra visualmente una tarjeta de ataque
 function setAttackExpanded(id, expanded) {
   const card = getEl('card-' + id);
   const expandText = getEl('expand-' + id);
@@ -87,6 +107,7 @@ function setAttackExpanded(id, expanded) {
   expandText.textContent = expanded ? TEXTO_CONTRAER : TEXTO_EXPANDIR;
 }
 
+// Genera las tarjetas de ataque en el grid del HTML
 function buildAttacks() {
   const grid = getEl('attacks-grid');
   let html = '';
@@ -103,23 +124,31 @@ function buildAttacks() {
         <div class="attack-expand" id="expand-${a.id}">${TEXTO_EXPANDIR}</div>
       </div>`;
   });
-  // Panel de detalle al final
+  // Panel compartido donde se muestra el detalle del ataque seleccionado
   html += `<div class="attack-detail-panel" id="attack-panel"></div>`;
   grid.innerHTML = html;
 }
 
+// Al hacer clic en una tarjeta: muestra u oculta su detalle
 function toggleAttack(id) {
   const panel = getEl('attack-panel');
+
+  // Si ya estaba abierta, la cerramos
   if (openAttack === id) {
     panel.classList.remove('open');
     setAttackExpanded(id, false);
     openAttack = null;
     return;
   }
+
+  // Cierra la tarjeta anterior si habia otra abierta
   if (openAttack) {
     setAttackExpanded(openAttack, false);
   }
+
   const a = attacks.find(x => x.id === id);
+
+  // Rellena el panel con descripcion, pasos y consejo de defensa
   panel.innerHTML = `
     <div class="detail-inner">
       <div>
@@ -141,31 +170,50 @@ function toggleAttack(id) {
   setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 }
 
+// Inicializa las tarjetas al cargar la pagina
 buildAttacks();
 
-/* ==================== FILTRACIONES ==================== */
+/* ==================== FILTRACIONES (Have I Been Pwned) ==================== */
+
+// Permite comprobar con la tecla Enter
 getEl('pwned-email').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkPwned();
 });
 
+// Consulta si un correo aparece en filtraciones conocidas
 async function checkPwned() {
   const correo = getEl('pwned-email').value.trim();
+
+  // Validacion basica del formato de correo
   if (!correo || !correo.includes('@')) { alert('Introduce un correo valido.'); return; }
+
   const btn = getEl('check-btn');
   const resultEl = getEl('pwned-result');
-  btn.disabled = true; btn.textContent = TEXTO_BOTON_COMPROBANDO;
+  btn.disabled = true;
+  btn.textContent = TEXTO_BOTON_COMPROBANDO;
   resultEl.className = 'pwned-result';
+
+  // Enlace de respaldo al comprobador oficial
   const officialUrl = `https://haveibeenpwned.com/account/${encodeURIComponent(correo)}`;
+
   try {
+    // Timeout de 8 segundos por si la API tarda o no responde
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    // Proxy CORS: el navegador no puede llamar directamente a HIBP,
+    // asi que pasamos por allorigins.win que actua de intermediario
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://haveibeenpwned.com/api/v2/breachedaccount/' + encodeURIComponent(correo) + '?truncateResponse=false')}`;
     const resp = await fetch(proxyUrl, { signal: controller.signal });
     clearTimeout(timeoutId);
+
     const data = await resp.json();
+
     if (data.contents) {
       try {
         const parsed = JSON.parse(data.contents);
+
+        // Si devuelve un array con filtraciones, el correo esta comprometido
         if (Array.isArray(parsed) && parsed.length > 0) {
           const names = parsed.slice(0, 10).map(b => b.Name || b.name || 'Desconocido');
           setPwnedResult(resultEl, `
@@ -181,12 +229,14 @@ async function checkPwned() {
           showSafe(resultEl);
         }
       } catch(e) {
+        // La respuesta no era JSON valido
         showManualCheck(resultEl, officialUrl);
       }
     } else {
       showManualCheck(resultEl, officialUrl);
     }
   } catch(e) {
+    // Error de red, timeout o bloqueo CORS
     showManualCheck(resultEl, officialUrl);
   } finally {
     btn.disabled = false;
@@ -194,10 +244,12 @@ async function checkPwned() {
   }
 }
 
+// Muestra mensaje cuando no hay filtraciones detectadas
 function showSafe(el) {
   setPwnedResult(el, `<div class="result-safe"><div class="result-header"><span style="font-size:20px;">OK</span><h3>No se han encontrado filtraciones</h3></div><p class="result-body">Tu correo no aparece en filtraciones conocidas con este metodo. Sigue usando contraseñas fuertes y unicas.</p></div>`);
 }
 
+// Si falla la API, ofrece el enlace directo a Have I Been Pwned
 function showManualCheck(el, officialUrl) {
   setPwnedResult(el, `
     <div style="font-size:12px;color:var(--text-muted);padding:12px;background:var(--surface);border-radius:8px;border:0.5px solid var(--border);line-height:1.7;">
@@ -208,6 +260,8 @@ function showManualCheck(el, officialUrl) {
 }
 
 /* ==================== CUESTIONARIO ==================== */
+
+// Banco de 6 preguntas: correct = indice de la respuesta correcta (0-based)
 const quizData = [
   { q: 'Cual es la forma mas comun de distribuir ransomware?', opts: ['Memorias USB', 'Correos de phishing', 'Intrusion fisica', 'Hackeo por satelite'], correct: 1, explain: 'Mas del 90% del ransomware llega por correos de phishing con adjuntos o enlaces maliciosos.' },
   { q: 'Que protege principalmente HTTPS?', opts: ['Malware en tu dispositivo', 'Espionaje de datos en transito', 'Robo de contraseñas del servidor', 'Paginas de phishing'], correct: 1, explain: 'HTTPS cifra los datos en transito y evita escuchas tipo man-in-the-middle. No protege por si solo la base de datos del servidor ni detiene el phishing.' },
@@ -217,10 +271,15 @@ const quizData = [
   { q: 'Que es una vulnerabilidad zero-day?', opts: ['Un fallo corregido el mismo dia', 'Un exploit sin parche disponible', 'Un virus que se borra en 24 horas', 'Un token de reseteo que expira a medianoche'], correct: 1, explain: 'Zero-day significa que el desarrollador ha tenido cero dias para corregirla. Son muy valiosas para atacantes porque aun no hay defensa completa.' },
 ];
 
-let qIdx = 0, score = 0, answered = false;
+let qIdx = 0;      // Pregunta actual (0 a 5)
+let score = 0;       // Aciertos acumulados
+let answered = false; // Evita responder dos veces la misma pregunta
 
+// Dibuja la pregunta actual o la pantalla de resultados finales
 function renderQuiz() {
   const box = getEl('quiz-box');
+
+  // Si ya respondio todas, muestra puntuacion final
   if (qIdx >= quizData.length) {
     const pct = Math.round((score / quizData.length) * 100);
     const grade = pct >= 80 ? 'Excelente trabajo!' : pct >= 50 ? 'Buen intento.' : 'Sigue practicando.';
@@ -233,9 +292,11 @@ function renderQuiz() {
       </div>`;
     return;
   }
+
   const q = quizData[qIdx];
   answered = false;
   const pct = Math.round((qIdx / quizData.length) * 100);
+
   box.innerHTML = `
     <div class="quiz-header">
       <span class="quiz-header-left">P${qIdx + 1}</span>
@@ -252,15 +313,20 @@ function renderQuiz() {
     </div>`;
 }
 
+// Procesa la respuesta elegida: colorea botones y muestra explicacion
 function answerQuiz(idx) {
   if (answered) return;
   answered = true;
+
   const q = quizData[qIdx];
   const opciones = document.querySelectorAll('.quiz-opt');
   opciones.forEach(b => b.disabled = true);
+
+  // Marca la opcion elegida como correcta o incorrecta
   opciones[idx].classList.add(idx === q.correct ? 'correct' : 'wrong');
   if (idx !== q.correct) opciones[q.correct].classList.add('correct');
   if (idx === q.correct) score++;
+
   const fb = getEl('qfb');
   fb.className = 'quiz-feedback show ' + (idx === q.correct ? 'good' : 'bad');
   fb.textContent = (idx === q.correct ? 'Correcto. ' : 'Incorrecto. ') + q.explain;
@@ -271,34 +337,58 @@ function nextQ() { qIdx++; renderQuiz(); }
 function restartQuiz() { qIdx = 0; score = 0; renderQuiz(); }
 renderQuiz();
 
-/* ==================== CONTRASEÑA ==================== */
+/* ==================== ANALIZADOR DE CONTRASEÑA ==================== */
+
+// Evalua la fuerza de una contraseña en tiempo real (llamada desde oninput del HTML)
 function testPassword(pw) {
   const bar = getEl('pw-bar');
   const strengthLbl = getEl('pw-strength');
   const entropyLbl = getEl('pw-entropy');
   const suggestions = getEl('pw-suggestions');
 
-  const criteria = { len: pw.length >= 12, upper: /[A-Z]/.test(pw), lower: /[a-z]/.test(pw), num: /\d/.test(pw), sym: /[^a-zA-Z0-9]/.test(pw), rep: pw.length > 0 && !/(.)\1{2,}/.test(pw) };
+  // Comprueba cada criterio con expresiones regulares
+  const criteria = {
+    len: pw.length >= 12,
+    upper: /[A-Z]/.test(pw),
+    lower: /[a-z]/.test(pw),
+    num: /\d/.test(pw),
+    sym: /[^a-zA-Z0-9]/.test(pw),
+    rep: pw.length > 0 && !/(.)\1{2,}/.test(pw) // sin 3+ caracteres repetidos seguidos
+  };
 
+  // Actualiza los puntos verdes de cada criterio en la interfaz
   CLAVES_CRITERIOS.forEach(k => {
     getEl('d-' + k).classList.toggle('pass', criteria[k]);
     getEl('c-' + k).classList.toggle('pass', criteria[k]);
   });
 
+  // Si el campo esta vacio, resetea la barra y los textos
   if (!pw) {
-    bar.style.width = '0%'; strengthLbl.textContent = '—'; strengthLbl.style.color = 'var(--text-muted)';
-    entropyLbl.textContent = ''; suggestions.textContent = ''; return;
+    bar.style.width = '0%';
+    strengthLbl.textContent = '—';
+    strengthLbl.style.color = 'var(--text-muted)';
+    entropyLbl.textContent = '';
+    suggestions.textContent = '';
+    return;
   }
 
+  // Calcula entropia aproximada en bits segun el espacio de caracteres usado
   const charspace = (criteria.lower?26:0)+(criteria.upper?26:0)+(criteria.num?10:0)+(criteria.sym?32:0);
   const bits = Math.round(pw.length * Math.log2(Math.max(charspace, 1)));
+
+  // Puntuacion de 0 a 100 segun longitud y variedad de caracteres
   let s = 0;
-  if (pw.length >= 8) s += 15; if (pw.length >= 12) s += 15; if (pw.length >= 16) s += 10;
+  if (pw.length >= 8) s += 15;
+  if (pw.length >= 12) s += 15;
+  if (pw.length >= 16) s += 10;
   if (criteria.upper && criteria.lower) s += 15;
-  if (criteria.num) s += 10; if (criteria.sym) s += 20;
-  if (criteria.rep) s += 10; if (pw.length >= 20) s += 5;
+  if (criteria.num) s += 10;
+  if (criteria.sym) s += 20;
+  if (criteria.rep) s += 10;
+  if (pw.length >= 20) s += 5;
   s = Math.min(s, 100);
 
+  // Niveles de fuerza con color asociado para la barra
   const tiers = [
     { min:0,  lbl:'Muy debil',   color:'#e24b4a' },
     { min:25, lbl:'Debil',       color:'#f59e0b' },
@@ -307,10 +397,14 @@ function testPassword(pw) {
     { min:82, lbl:'Muy fuerte',  color:'#22c55e' },
   ];
   const tier = [...tiers].reverse().find(t => s >= t.min);
-  bar.style.width = s + '%'; bar.style.background = tier.color;
-  strengthLbl.textContent = tier.lbl; strengthLbl.style.color = tier.color;
+
+  bar.style.width = s + '%';
+  bar.style.background = tier.color;
+  strengthLbl.textContent = tier.lbl;
+  strengthLbl.style.color = tier.color;
   entropyLbl.textContent = bits + ' bits de entropia';
 
+  // Sugerencias de mejora segun criterios no cumplidos
   const tips = [];
   if (pw.length < 12) tips.push('Usa al menos 12 caracteres');
   if (!criteria.upper) tips.push('Anade mayusculas');
@@ -322,6 +416,8 @@ function testPassword(pw) {
 }
 
 /* ==================== SEGUIMIENTO DE SCROLL ==================== */
+
+// Actualiza el menu activo automaticamente al hacer scroll por las secciones
 const sections = ['attacks','pwned','quiz','tips','password'];
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -329,5 +425,9 @@ const observer = new IntersectionObserver(entries => {
       setNavActiveByHref('#' + e.target.id);
     }
   });
-}, { threshold: 0.3 });
-sections.forEach(id => { const el = getEl(id); if (el) observer.observe(el); });
+}, { threshold: 0.3 }); // Se activa cuando el 30% de la seccion es visible
+
+sections.forEach(id => {
+  const el = getEl(id);
+  if (el) observer.observe(el);
+});
