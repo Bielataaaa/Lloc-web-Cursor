@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CyberGuard — Aprende Ciberseguridad</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css" />
+  <!-- Metadatos basicos: codificacion UTF-8 y diseno adaptable a moviles -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberGuard — Aprende Ciberseguridad</title>
+
+  <!-- Fuentes de Google: Space Mono (texto tecnico) y Syne (titulos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<!-- Fondo decorativo con cuadricula (estilo terminal/cyber) -->
 <div class="grid-bg"></div>
 
-<!-- CABECERA -->
+<!-- ==================== CABECERA / NAVEGACION ==================== -->
+<!-- Menu fijo con enlaces a cada seccion de la pagina (anclas #) -->
 <header>
   <div class="nav-inner">
     <a href="#" class="logo">
@@ -21,6 +28,7 @@
       Cyber<span>Guard</span>
     </a>
     <nav class="nav-links">
+      <!-- onclick="setActive(this)" marca el enlace activo al hacer clic -->
       <a class="nav-link active" href="#attacks" onclick="setActive(this)">Ataques</a>
       <a class="nav-link" href="#pwned" onclick="setActive(this)">Comprobar filtraciones</a>
       <a class="nav-link" href="#quiz" onclick="setActive(this)">Cuestionario</a>
@@ -33,7 +41,8 @@
 
 <main>
 
-  <!-- PORTADA -->
+  <!-- ==================== PORTADA (HERO) ==================== -->
+  <!-- Primera seccion visible: titulo, descripcion, botones y estadisticas -->
   <section class="hero">
     <div class="container">
       <div class="hero-content">
@@ -51,6 +60,7 @@
           <a class="btn-primary" href="#attacks">Explorar ataques</a>
           <a class="btn-secondary" href="#pwned">Comprobar filtraciones</a>
         </div>
+        <!-- Cifras informativas sobre ciberseguridad -->
         <div class="hero-stats">
           <div class="stat-item">
             <div class="stat-num">10B+</div>
@@ -67,6 +77,7 @@
         </div>
       </div>
     </div>
+    <!-- Decoracion lateral: texto binario simulando escaneo de red -->
     <div class="hero-visual">01001000 01000001 01000011 01001011
 11001000 10110100 01100101 01110100
 00110100 01100011 01101011 00101101
@@ -82,7 +93,8 @@
 [acceso concedido]</div>
   </section>
 
-  <!-- VECTORES DE ATAQUE -->
+  <!-- ==================== VECTORES DE ATAQUE ==================== -->
+  <!-- Las tarjetas se generan dinamicamente en app.js (buildAttacks) -->
   <section id="attacks">
     <div class="container">
       <div class="section-label">Vectores de ataque</div>
@@ -90,12 +102,13 @@
       <p class="section-sub">Haz clic en una tarjeta para entender como funciona cada ataque y como defenderte.</p>
 
       <div class="attacks-grid" id="attacks-grid">
-        <!-- Tarjetas generadas por JS -->
+        <!-- Tarjetas generadas por JavaScript -->
       </div>
     </div>
   </section>
 
-  <!-- COMPROBADOR DE FILTRACIONES -->
+  <!-- ==================== COMPROBADOR DE FILTRACIONES ==================== -->
+  <!-- Consulta Have I Been Pwned via API externa (sin backend propio) -->
   <section id="pwned">
     <div class="container">
       <div class="section-label">Comprobacion de filtraciones</div>
@@ -107,15 +120,18 @@
           <div class="pwned-form-box">
             <div class="input-group">
               <label>Tu direccion de correo</label>
+              <!-- id="pwned-email" lo usa checkPwned() en app.js -->
               <input class="cyber-input" type="email" id="pwned-email" placeholder="tu@ejemplo.com" />
             </div>
             <button class="cyber-btn" id="check-btn" onclick="checkPwned()">// comprobar_filtracion</button>
+            <!-- Aqui se muestra el resultado (comprometido / seguro / enlace manual) -->
             <div class="pwned-result" id="pwned-result"></div>
             <div class="privacy-note">
               Tu correo no se guarda en esta pagina. Si la consulta automatica falla por CORS o por cambios en la API, te daremos un enlace directo y fiable al comprobador oficial.
             </div>
           </div>
         </div>
+        <!-- Tarjetas informativas estaticas -->
         <div class="pwned-info">
           <div class="info-card">
             <div class="info-num">15B+</div>
@@ -135,7 +151,8 @@
     </div>
   </section>
 
-  <!-- CUESTIONARIO -->
+  <!-- ==================== CUESTIONARIO ==================== -->
+  <!-- Preguntas y respuestas gestionadas por app.js (renderQuiz) -->
   <section id="quiz">
     <div class="container">
       <div class="section-label">Ponte a prueba</div>
@@ -144,13 +161,14 @@
 
       <div class="quiz-wrapper">
         <div class="quiz-box" id="quiz-box">
-          <!-- Contenido generado por JS -->
+          <!-- Contenido generado por JavaScript -->
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONSEJOS -->
+  <!-- ==================== CONSEJOS ==================== -->
+  <!-- 8 tarjetas estaticas con buenas practicas de seguridad -->
   <section id="tips">
     <div class="container">
       <div class="section-label">Buenas practicas</div>
@@ -210,7 +228,8 @@
     </div>
   </section>
 
-  <!-- COMPROBADOR DE CONTRASEÑA -->
+  <!-- ==================== ANALIZADOR DE CONTRASEÑA ==================== -->
+  <!-- La logica de evaluacion esta en testPassword() de app.js -->
   <section id="password">
     <div class="container">
       <div class="section-label">Analizador de contraseñas</div>
@@ -222,13 +241,16 @@
           <h3>// analizador_fuerza_contraseña</h3>
           <div class="input-group">
             <label>Introduce una contraseña para probar</label>
+            <!-- oninput llama a testPassword() cada vez que escribes -->
             <input class="cyber-input" type="password" id="pw-input" placeholder="Escribe aqui..." oninput="testPassword(this.value)" autocomplete="off" />
           </div>
+          <!-- Barra de fuerza: ancho y color cambian segun la puntuacion -->
           <div class="pw-bar-bg"><div class="pw-bar-fill" id="pw-bar" style="width:0%;background:#e24b4a;"></div></div>
           <div class="pw-meta">
             <span class="pw-strength-lbl" id="pw-strength" style="color:#64748b;">—</span>
             <span class="pw-entropy-lbl" id="pw-entropy"></span>
           </div>
+          <!-- Criterios: cada punto verde indica un requisito cumplido -->
           <div class="pw-criteria">
             <div class="criterion" id="c-len"><div class="criterion-dot" id="d-len"></div>12+ caracteres</div>
             <div class="criterion" id="c-upper"><div class="criterion-dot" id="d-upper"></div>Letras mayusculas</div>
@@ -262,6 +284,7 @@
 
 </main>
 
+<!-- ==================== PIE DE PAGINA ==================== -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -279,6 +302,7 @@
   </div>
 </footer>
 
+<!-- Logica interactiva: ataques, filtraciones, quiz y contraseñas -->
 <script src="app.js"></script>
 </body>
 </html>
