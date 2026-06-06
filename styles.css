@@ -1,3 +1,9 @@
+/* =============================================================================
+   CYBERGUARD — styles.css
+   Estilos visuales de toda la web. Tema oscuro con acentos verdes (estilo cyber).
+   ============================================================================= */
+
+/* --- Variables globales: colores, fuentes y medidas reutilizables --- */
 :root {
     --bg: #080c14;
     --bg2: #0d1321;
@@ -18,8 +24,9 @@
     --mono: 'Space Mono', monospace;
     --display: 'Syne', sans-serif;
   }
+  /* Reset basico y estilos del cuerpo de la pagina */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; } /* Desplazamiento suave al pulsar enlaces # */
   body {
     background: var(--bg);
     color: var(--text);
@@ -59,7 +66,8 @@
     background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,255,136,0.06) 0%, transparent 70%);
   }
 
-  /* === HEADER / NAV === */
+  /* === CABECERA Y MENU DE NAVEGACION === */
+  /* sticky: el menu permanece fijo al hacer scroll */
   header {
     position: sticky; top: 0; z-index: 100;
     background: rgba(8,12,20,0.92);
@@ -112,7 +120,7 @@
   .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
   section { padding: 5rem 0; }
 
-  /* === HERO === */
+  /* === PORTADA (primera pantalla) === */
   .hero {
     min-height: calc(100vh - 60px);
     display: flex; align-items: center;
@@ -205,7 +213,7 @@
   }
   .section-sub { font-size: 14px; color: var(--text-muted); max-width: 520px; }
 
-  /* === ATTACK VECTORS === */
+  /* === SECCION DE ATAQUES (tarjetas generadas por JS) === */
   #attacks { background: var(--bg); }
   .attacks-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -269,7 +277,7 @@
   .defense-tip h4 { color: var(--green); margin-bottom: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
   .defense-tip p { font-size: 12px; color: #a7f3d0; }
 
-  /* === PWNED SECTION === */
+  /* === COMPROBADOR DE FILTRACIONES === */
   #pwned { background: var(--bg2); }
   .pwned-wrapper {
     display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem;
@@ -330,7 +338,7 @@
   .info-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
   .info-num { font-family: var(--display); font-size: 1.8rem; font-weight: 800; color: var(--green); line-height: 1; margin-bottom: 4px; }
 
-  /* === QUIZ === */
+  /* === CUESTIONARIO INTERACTIVO === */
   #quiz { background: var(--bg); }
   .quiz-wrapper { max-width: 700px; margin: 3rem auto 0; }
   .quiz-box {
@@ -396,7 +404,7 @@
   }
   .retry-btn:hover { background: rgba(0,255,136,0.08); }
 
-  /* === TIPS === */
+  /* === CONSEJOS DE SEGURIDAD (tarjetas estaticas) === */
   #tips { background: var(--bg2); }
   .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 3rem; }
   .tip-card {
@@ -414,7 +422,7 @@
   .tip-bar { height: 2px; background: var(--bg); border-radius: 1px; margin-top: 1rem; overflow: hidden; }
   .tip-bar-fill { height: 100%; border-radius: 1px; }
 
-  /* === PASSWORD === */
+  /* === ANALIZADOR DE CONTRASEÑA === */
   #password { background: var(--bg); }
   .pw-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem; }
   .pw-tester {
@@ -471,7 +479,7 @@
   .footer-link:hover { color: var(--green); }
   .footer-copy { font-size: 11px; color: var(--text-muted); }
 
-  /* === RESPONSIVE === */
+  /* === DISENO RESPONSIVE (moviles y tablets) === */
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .hero h1 { font-size: 2.5rem; }
